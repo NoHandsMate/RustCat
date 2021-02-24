@@ -1,9 +1,7 @@
 [package]
-name = "RustCat"
+name = "rust-cat"
 version = "0.1.0"
-authors = ["NoHandsMate <z170s.lol@gmail.com>"]
+authors = [" Lorenzo Cecchini <z170s.lol@gmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
