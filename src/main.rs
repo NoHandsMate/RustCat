@@ -11,7 +11,7 @@
  *  Flags:
  *
  *      -v : print the result into terminal anyway
- *      -s : Search for words that match a given pattern. Only those word will be concatenated.
+ *      -s : Search for words that match a given pattern. Only those word in the second file will be concatenated.
  *           Usage: ./rust-cat -s beach,car,boat, <- Finish the pattern with a comma   
  *      
  *      -c : Count a given set words in the files. 
@@ -25,102 +25,28 @@
 
 //TODO: Create custom Error type
 
+use std::env; // for collecting arguments
+use std::fs;  // File I/O
 
-struct Settings {
 
-    verbose : bool,
-    search  : bool,
-    count   : bool,
-    output  : bool
+fn parse_arguments(args : &[String]) -> (&str, &str) {
+
+    let file1 = &args[1];
+    let file2 = &args[2];
+
+    (file1, file2)
 }
-
-
-impl Settings {
-    
-    fn new() -> Settings {
-        
-        Settings {
-            verbose : false,
-            search  : false,
-            count   : false,
-            output  : false
-        }
-    }
-}
-
-
-fn extract_pattern(source : &[String], settings : &mut Settings) -> Vec<String> {
-    
-    let mut word_pattern : Vec<String> = Vec::new();
-    
-    settings.search = true;
-    
-
-    for value in source.iter() {
-        
-        let mut last_word_index = 0;
-
-        let sliced = &value[..];
-
-        for (ind, character) in sliced.chars().enumerate() {
-            
-            if character == ',' {
-                
-                let new_slice = &sliced[last_word_index..ind];
-                last_word_index = ind + 1;
-
-                let string = String::from(new_slice);
-                word_pattern.push(string);
-            }
-
-        }
-        
-    }
-         
-    word_pattern
-}
-
 
 fn main() {
     
-    let args : Vec<String> = std::env::args().collect();
-    
-    let pattern : Vec<String> = Vec::new();
-    let args = &args[1..];  // Remove the saved filename and extract only the args
-    
-    let mut settings = Settings::new();
+    let args : Vec<String> = env::args().collect();
 
-    for (index, value) in args.iter().enumerate() { 
-        
-        let value = &value[..];
+    let (file1, file2) = parse_arguments(&args);
 
-        match value {
-            "-v" => {
+    let file1_content = fs::read_to_string(file1).expect("Something went wrong reading the first file");
+    let file2_content = fs::read_to_string(file2).expect("Something went wrong reading the second file");
 
-               settings.verbose = true; 
-
-            }
-
-            "-s" => {
-                
-                pattern = extract_pattern(&args[index + 1..], &mut settings);
-            }
-
-            "-c" => {
-
-               settings.count = true; 
-            }
-
-
-            "-o" => {
-
-
-            }
-
-            _ => ()
-            
-        }
-        
-    }
+    println!("{}", file1_content);
+    println!("{}", file2_content);
 
 }
